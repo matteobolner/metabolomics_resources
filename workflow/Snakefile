@@ -1,0 +1,8 @@
+include: "rules/kegg.smk"
+include: "rules/gwas.smk"
+
+
+rule all:
+    input:
+        "data/kegg/merged_pathways_and_compounds.tsv"
+        #expand("data/gwas/{breed}/gwas_with_kegg_compounds.tsv", breed=['LW','DU'])

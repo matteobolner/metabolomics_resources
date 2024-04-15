@@ -1,7 +1,3 @@
-data/
+.snakemake/
+data
 input/
-
-
-# Added by cargo
-
-/target
