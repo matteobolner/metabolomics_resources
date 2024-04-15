@@ -1,9 +1,10 @@
 import pandas as pd
 
-gwas=pd.read_excel("input/LW_5e05_genes_gwascatalog_MetabolonInfo.xlsx")
+gwas=pd.read_excel("input/LW_5e05_genes_gwascatalog_MetabolonInfo_2.xlsx")
 
 gwas=gwas[~gwas['CHEMICAL_NAME'].isna()]
-gwas=gwas[['CHEM_ID','SUPER_PATHWAY','SUB_PATHWAY','CHEMICAL_NAME','HMDB','genes±500K','GWAScatalog']]
+
+gwas=gwas[['CHEM_ID','SUPER_PATHWAY','SUB_PATHWAY','CHEMICAL_NAME','HMDB','genes±500K','GWAScatalog','check_automatico_ricerca_trova','rs']]
 gwas=gwas[gwas['genes±500K']!='No_genes']
 gwas=gwas[~gwas['GWAScatalog'].isna()]
 gwas=gwas.drop(columns=['genes±500K'])
@@ -32,9 +33,8 @@ gwas=gwas.explode("annotation")
 gwas=gwas.drop(columns=['GWAScatalog'])
 gwas=gwas.reset_index(drop=True)
 gwas['CHEMICAL_NAME']=gwas['CHEMICAL_NAME'].str.rstrip("*")
-gwas['chemical_name_in_annotation']=gwas.apply(lambda row: row['CHEMICAL_NAME'] in row['annotation'], axis=1)
-
-gwas.to_csv("data/gwas/gwas_single_gene_annotation.tsv", index=False, sep='\t')
+gwas['chemical_name_in_annotation']=gwas.apply(lambda row: row['CHEMICAL_NAME'].lower() in row['annotation'].lower(), axis=1)
+#gwas.to_csv("data/gwas/gwas_single_gene_annotation.tsv", index=False, sep='\t')
 
 gwas[['annotation']].drop_duplicates().to_csv("data/gwas/gwas_annotations_only.tsv")
 
@@ -51,8 +51,6 @@ all_annotations=[i for i in gwas['annotation']]
 ann={}
 
 counter=0
-
-len(gwas['annotation'].unique())
 
 for i in gwas['annotation'].unique():
     counter+=1
